@@ -28,6 +28,14 @@ ORDER BY tmp.name ASC;
 #3 Find the first name, last name and total combined film length of Sci-Fi films for every actor
 #That is the result should list the names of all of the actors(even if an actor has not been in any Sci-Fi films)and the total length of Sci-Fi films they have been in.
 
+SELECT A.first_name, A.last_name, SUM(F.length)
+FROM category C
+  INNER JOIN film_category FC ON FC.category_id = C.category_id and C.name = 'Sci-Fi'
+  INNER JOIN film F on F.film_id = FC.film_id
+  INNER JOIN film_actor FA ON F.film_id = FA.film_id
+  RIGHT JOIN actor A ON A.actor_id = FA.actor_id
+GROUP BY A.first_name, A.last_name
+ORDER BY A.first_name
 
 #4 Find the first name and last name of all actors who have never been in a Sci-Fi film
   
@@ -44,10 +52,29 @@ WHERE A.actor_id NOT IN (
 );
 
 
-
 #5 Find the film title of all films which feature both KIRSTEN PALTROW and WARREN NOLTE
 #Order the results by title, descending (use ORDER BY title DESC at the end of the query)
 #Warning, this is a tricky one and while the syntax is all things you know, you have to think oustide
 #the box a bit to figure out how to get a table that shows pairs of actors in movies
+
+
+SELECT Table1.title
+FROM (
+  SELECT F.film_id, F.title 
+  FROM film F
+    INNER JOIN film_actor FA ON FA.film_id = F.film_id
+    INNER JOIN actor A ON A.actor_id = FA.actor_id
+    WHERE A.first_name = 'WARREN' AND A.last_name = 'NOLTE'
+  ) AS Table1
+  INNER JOIN (
+    SELECT F.film_id, F.title 
+    FROM film F
+      INNER JOIN film_actor FA ON FA.film_id = F.film_id
+      INNER JOIN actor A ON A.actor_id = FA.actor_id
+      WHERE A.first_name = 'KIRSTEN' AND A.last_name = 'PALTROW'
+    ) AS Table2
+  WHERE Table1.film_id = Table2.film_id
+  ORDER BY Table1.title DESC;
+
 
 
