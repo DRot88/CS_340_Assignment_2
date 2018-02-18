@@ -10,8 +10,20 @@ WHERE rental_duration = (
 );
 
 #2 We want to find out how many of each category of film ED CHASE has started in so return a table with category.name and the count
-#of the number of films that ED was in which were in that category order by the category name ascending (Your query should return every category even if ED has been in no films in that category).
+# of the number of films that ED was in which were in that category order by the category name ascending (Your query should return every category even if ED has been in no films in that category).
 
+SELECT DISTINCT tmp.name, COUNT( tmp.name ) AS  'Ed Appeared'
+  FROM (
+    SELECT F.title, A.first_name, A.last_name, C.name
+    FROM film F
+      INNER JOIN film_actor FA ON FA.film_id = F.film_id
+      INNER JOIN actor A ON A.actor_id = FA.actor_id
+      INNER JOIN film_category FC ON FC.film_id = F.film_id
+      INNER JOIN category C ON C.category_id = FC.category_id
+    WHERE A.first_name =  'ED' AND A.last_name =  'CHASE'
+  ) AS tmp
+GROUP BY tmp.name
+ORDER BY tmp.name ASC;
 
 #3 Find the first name, last name and total combined film length of Sci-Fi films for every actor
 #That is the result should list the names of all of the actors(even if an actor has not been in any Sci-Fi films)and the total length of Sci-Fi films they have been in.
